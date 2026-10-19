@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Black Box EDR
+Comment=
+Exec=/home/kali/Desktop/EDR/.run.sh
+
+Icon=/home/kali/Desktop/EDR/icon/blackbox.ico
+Path=
+Terminal=true
+StartupNotify=false
