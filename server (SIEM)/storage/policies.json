@@ -1,0 +1,17 @@
+{
+  "global": {
+    "edr_response": true,
+    "firewall_enabled": false
+  },
+  "settings": {
+    "watch_dirs": "/tmp /home /var/www /opt",
+    "file_monitor_interval": 0.5,
+    "max_hash_size_mb": 10,
+    "hash_extensions": "sh py elf bin so jar exe run",
+    "process_monitor_interval": 2,
+    "file_event_ttl": 2,
+    "file_hash_ttl": 300,
+    "process_hash_ttl": 600,
+    "network_event_ttl": 30
+  }
+}
