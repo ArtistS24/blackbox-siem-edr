@@ -35,9 +35,10 @@ tail -F "$ENDPOINT_LOG" | while read -r line; do
             --arg cmd "$command_line" \
             '
             .process_rules[]? |
+            .value as $val |
             select(
-                (.match == "process_name" and $pname == .value) or
-                (.match == "command_line" and ($cmd | contains(.value)))
+                (.match == "process_name" and $pname == $val) or
+                (.match == "command_line" and ($cmd | contains($val)))
             )
             ' "$RULES_FILE")
 

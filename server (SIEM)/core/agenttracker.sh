@@ -16,7 +16,7 @@ fi
 
 AGENTS_PATH="$ROOT_DIR/$AGENTS_FILE"
 
-if [ ! -f "$AGENTS_PATH" ]; then
+if [ ! -s "$AGENTS_PATH" ]; then
     echo '{"agents":[]}' > "$AGENTS_PATH"
 fi
 
@@ -57,7 +57,7 @@ else
        '(.agents[] | select(.hostname==$host)) |= (
           .last_seen = $time |
           .last_heartbeat = $time |
-          .ip = $ip |
+          (if $ip != "" then .ip = $ip else . end) |
           .status = "online" |
           (if $cpu != "" then .cpu_percent = ($cpu|tonumber) else . end) |
           (if $mem != "" then .memory_kb = ($mem|tonumber) else . end)
