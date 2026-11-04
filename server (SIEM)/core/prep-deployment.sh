@@ -14,6 +14,10 @@ EOF
 
 echo "[*] Packaging EDR agent..."
 cd "$ROOT_DIR/.."
-tar -czf "$ROOT_DIR/storage/agent_package.tar.gz" EDR/
+if [[ -d "EDR" ]]; then
+    tar --owner=0 --group=0 -czf "$ROOT_DIR/storage/agent_package.tar.gz" EDR/
+elif [[ -d "agent (EDR)" ]]; then
+    tar --owner=0 --group=0 --transform 's|^agent (EDR)|EDR|' -czf "$ROOT_DIR/storage/agent_package.tar.gz" "agent (EDR)"/
+fi
 
 echo "[*] Deployment files ready."

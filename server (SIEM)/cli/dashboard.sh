@@ -510,7 +510,7 @@ while true; do
                         (.level | ascii_upcase | .[0:4]) as $lvl |
                         (.module | .[0:8]) as $mod | 
                         (.event_type | .[0:15]) as $et |
-                        ((.data.process_name // .data.destination_ip // "system") | .[0:27]) as $obj |
+                        ((.data.process_name // .data.file_path // .data.destination_ip // .data.action // "system") | .[0:27]) as $obj |
                         "\($ts)|\($lvl)|\($mod)|\($et)|\($obj)"' 2>/dev/null)
                     LAST_COUNT=$CURRENT_TOTAL
                 fi

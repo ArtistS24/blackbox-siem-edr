@@ -1,0 +1,5 @@
+*.log
+.run.sh
+__pycache__/
+*.tmp
+*.sock

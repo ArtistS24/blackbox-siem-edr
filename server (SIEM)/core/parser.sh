@@ -20,7 +20,7 @@ do
 
     event_type=$(echo "$line" | jq -r '.event_type // "unknown"')
     host=$(echo "$line" | jq -r '.host // empty')
-    ip=$(echo "$line" | jq -r '.ip // empty')
+    ip=$(echo "$line" | jq -r '.ip // .data.ip // empty')
 
     processed_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
@@ -41,7 +41,7 @@ do
     fi
 
     case "$event_type" in
-        "process_detection"|"detection"|"response_action")
+        "process_detection"|"detection"|"response_action"|"action_executed")
             echo "$normalized" >> "$ROOT_DIR/$ALERT_LOG"
         ;;
         *)

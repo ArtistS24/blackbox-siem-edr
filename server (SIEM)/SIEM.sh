@@ -59,13 +59,13 @@ mkdir -p "$ROOT_DIR/$SERVICE_LOGS_DIR"
 touch "$ROOT_DIR/$EVENT_LOG"
 touch "$ROOT_DIR/$ALERT_LOG"
 
-if [ ! -f "$ROOT_DIR/$AGENTS_FILE" ]; then
+if [ ! -s "$ROOT_DIR/$AGENTS_FILE" ]; then
     echo '{"agents":[]}' > "$ROOT_DIR/$AGENTS_FILE"
 fi
-if [ ! -f "$ROOT_DIR/storage/rules.json" ]; then
+if [ ! -s "$ROOT_DIR/storage/rules.json" ] || ! jq -e '.process_rules' "$ROOT_DIR/storage/rules.json" >/dev/null 2>&1; then
     echo '{"process_rules":[]}' > "$ROOT_DIR/storage/rules.json"
 fi
-if [ ! -f "$ROOT_DIR/storage/policies.json" ]; then
+if [ ! -s "$ROOT_DIR/storage/policies.json" ]; then
     cat <<EOF > "$ROOT_DIR/storage/policies.json"
 {
   "global": {"edr_response":true, "firewall_enabled":false},
@@ -147,4 +147,4 @@ bash "$ROOT_DIR/cli/dashboard.sh"
 echo
 echo "[SIEM] Dashboard closed."
 echo "[SIEM] Services are still running in background."
-echo "Use ./stop.sh to stop them."
+echo "Use ./core/stopservice.sh to stop them."

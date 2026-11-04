@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 205" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gold-line" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d4a359" stop-opacity="0.6" />
+      <stop offset="50%" stop-color="#f3d692" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#d4a359" stop-opacity="0.6" />
+    </linearGradient>
+  </defs>
+  <style>
+    .mono { font-family: ui-monospace, SFMono-Regular, 'JetBrains Mono', 'Fira Code', Menlo, monospace; }
+    .roman { font-family: 'Georgia', 'Times New Roman', serif; font-size: 11.5px; font-weight: 700; letter-spacing: 1px; }
+    .title { fill: #f7f2e7; font-weight: 700; font-size: 12.2px; }
+    .sub { fill: #cbd5e1; font-size: 10.3px; }
+    .badge { font-size: 9.8px; font-weight: 700; letter-spacing: 0.5px; }
+  </style>
+
+  <rect x="2" y="2" width="896" height="201" rx="8" fill="#070b0e" stroke="#263238" stroke-width="1.5" />
+  <rect x="8" y="8" width="884" height="189" rx="5" fill="none" stroke="url(#gold-line)" stroke-width="0.8" stroke-opacity="0.4" />
+
+  <g transform="translate(20, 22)">
+    <rect width="194" height="160" rx="6" fill="#0b1217" stroke="#334155" stroke-width="1" />
+    <rect width="194" height="28" rx="6" fill="#101a21" />
+    <line x1="0" y1="28" x2="194" y2="28" stroke="#d4a359" stroke-opacity="0.4" stroke-width="1" />
+    <text x="12" y="18" fill="#e0b060" class="roman">I · ENDPOINT SENSOR</text>
+    <circle cx="178" cy="14" r="3.5" fill="#e0b060" />
+
+    <text x="12" y="48" class="mono title">agent/agent.sh</text>
+    <text x="12" y="67" class="mono sub">• inotifywait file monitor</text>
+    <text x="12" y="85" class="mono sub">• /proc &amp; ps process scan</text>
+    <text x="12" y="103" class="mono sub">• ss sockets &amp; who logins</text>
+
+    <rect x="12" y="124" width="170" height="22" rx="4" fill="#78350f" fill-opacity="0.25" stroke="#d4a359" stroke-width="0.8" />
+    <text x="97" y="139" fill="#f3d692" class="mono badge" text-anchor="middle">SHA-256 + TTL CACHE</text>
+  </g>
+
+  <path d="M218 102 L238 102" stroke="#d4a359" stroke-width="1.5" stroke-dasharray="3,3" />
+  <polygon points="240,102 234,98 234,106" fill="#d4a359" />
+
+  <g transform="translate(244, 22)">
+    <rect width="194" height="160" rx="6" fill="#0b1217" stroke="#334155" stroke-width="1" />
+    <rect width="194" height="28" rx="6" fill="#101a21" />
+    <line x1="0" y1="28" x2="194" y2="28" stroke="#f87171" stroke-opacity="0.4" stroke-width="1" />
+    <text x="12" y="18" fill="#f87171" class="roman">II · EDR RESPONSE</text>
+    <circle cx="178" cy="14" r="3.5" fill="#f87171" />
+
+    <text x="12" y="48" class="mono title">detection-engine.sh</text>
+    <text x="12" y="67" class="mono sub">• .process_rules[] matching</text>
+    <text x="12" y="85" class="mono sub">• 10s per-PID cooldown</text>
+    <text x="12" y="103" class="mono sub">• iptables BLACKBOX chains</text>
+
+    <rect x="12" y="124" width="170" height="22" rx="4" fill="#7f1d1d" fill-opacity="0.25" stroke="#f87171" stroke-width="0.8" />
+    <text x="97" y="139" fill="#fecaca" class="mono badge" text-anchor="middle">CRITICAL -&gt; AUTO-KILL PID</text>
+  </g>
+
+  <path d="M442 102 L462 102" stroke="#f87171" stroke-width="1.5" stroke-dasharray="3,3" />
+  <polygon points="464,102 458,98 458,106" fill="#f87171" />
+
+  <g transform="translate(468, 22)">
+    <rect width="194" height="160" rx="6" fill="#0b1217" stroke="#334155" stroke-width="1" />
+    <rect width="194" height="28" rx="6" fill="#101a21" />
+    <line x1="0" y1="28" x2="194" y2="28" stroke="#38bdf8" stroke-opacity="0.4" stroke-width="1" />
+    <text x="12" y="18" fill="#38bdf8" class="roman">III · SIEM INGEST</text>
+    <circle cx="178" cy="14" r="3.5" fill="#38bdf8" />
+
+    <text x="12" y="48" class="mono title">ingest.sh &amp; parser.sh</text>
+    <text x="12" y="67" class="mono sub">• socat TCP:9000 listener</text>
+    <text x="12" y="85" class="mono sub">• jq JSON schema routing</text>
+    <text x="12" y="103" class="mono sub">• agenttracker.sh health</text>
+
+    <rect x="12" y="124" width="170" height="22" rx="4" fill="#0369a1" fill-opacity="0.25" stroke="#38bdf8" stroke-width="0.8" />
+    <text x="97" y="139" fill="#7dd3fc" class="mono badge" text-anchor="middle">EVENTS.LOG &amp; ALERTS.LOG</text>
+  </g>
+
+  <path d="M666 102 L686 102" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3" />
+  <polygon points="688,102 682,98 682,106" fill="#38bdf8" />
+
+  <g transform="translate(692, 22)">
+    <rect width="188" height="160" rx="6" fill="#0b1217" stroke="#334155" stroke-width="1" />
+    <rect width="188" height="28" rx="6" fill="#101a21" />
+    <line x1="0" y1="28" x2="188" y2="28" stroke="#34d399" stroke-opacity="0.4" stroke-width="1" />
+    <text x="12" y="18" fill="#34d399" class="roman">IV · SOC CONSOLE</text>
+    <circle cx="172" cy="14" r="3.5" fill="#34d399" />
+
+    <text x="12" y="48" class="mono title">dashboard &amp; agent-mgmt</text>
+    <text x="12" y="67" class="mono sub">• Live sparkline TUI HUD</text>
+    <text x="12" y="85" class="mono sub">• Rule &amp; Firewall builder</text>
+    <text x="12" y="103" class="mono sub">• HTTP :9100 60s rule sync</text>
+
+    <rect x="12" y="124" width="164" height="22" rx="4" fill="#065f46" fill-opacity="0.25" stroke="#34d399" stroke-width="0.8" />
+    <text x="94" y="139" fill="#6ee7b7" class="mono badge" text-anchor="middle">1-LINER CURL ENROLLMENT</text>
+  </g>
+</svg>

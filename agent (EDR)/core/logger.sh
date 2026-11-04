@@ -8,7 +8,7 @@ log_event() {
 
   json_output=$(jq -c -n \
     --arg ts "$(date -Iseconds)" \
-    --arg host "$HOSTNAME" \
+    --arg host "${HOST_ID:-${HOSTNAME:-$(hostname)}}" \
     --arg lvl "$level" \
     --arg mod "$module" \
     --arg evt "$event_type" \
@@ -24,7 +24,11 @@ log_event() {
       data: $data
     }')
 
-  echo "$json_output" | socat - TCP:$SIEM_IP:$SIEM_PORT
+  if command -v socat >/dev/null 2>&1; then
+    echo "$json_output" | socat - TCP:$SIEM_IP:$SIEM_PORT 2>/dev/null || true
+  else
+    (echo "$json_output" > "/dev/tcp/$SIEM_IP/$SIEM_PORT") 2>/dev/null || true
+  fi
 
   echo "$json_output" >> "$ENDPOINT_LOG"
 }

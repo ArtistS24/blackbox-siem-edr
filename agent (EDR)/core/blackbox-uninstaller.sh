@@ -18,4 +18,9 @@ iptables -X BLACKBOX-IN 2>/dev/null
 iptables -X BLACKBOX-OUT 2>/dev/null
 
 echo "[*] Removing Files..."
-rm -f /etc/systemd/system/blac
+rm -f /etc/systemd/system/blackbox-edr.service
+systemctl daemon-reload
+rm -rf /opt/blackbox-edr
+rm -rf /var/log/blackbox-edr
+
+echo "[✓] BlackBox EDR service uninstalled."
