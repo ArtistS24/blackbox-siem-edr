@@ -8,7 +8,7 @@
 [![Telemetry](https://img.shields.io/badge/Transport-socat_%2B_jq-0e7490?style=for-the-badge&logo=linux&logoColor=white&labelColor=06090e)](server%20%28SIEM%29/core/ingest.sh)
 [![Endpoint Sensor](https://img.shields.io/badge/Sensor-inotifywait_%2B_%2Fproc-6366f1?style=for-the-badge&logo=kalilinux&logoColor=white&labelColor=06090e)](agent%20%28EDR%29/agent/agent.sh)
 [![Rule Spec](https://img.shields.io/badge/Rules_%26_Policies-JSON_Spec-b45309?style=for-the-badge&logo=json&logoColor=white&labelColor=06090e)](docs/detection_rules.md)
-[![SOC Dossier](https://img.shields.io/badge/SOC_Dossier-PDF_(8_Pages)-56d364?style=for-the-badge&logo=readthedocs&logoColor=white&labelColor=06090e)](docs/Blackbox_SIEM_EDR_Portfolio.pdf)
+[![SOC Dossier](https://img.shields.io/badge/SOC_Dossier-PDF_(12_Pages)-56d364?style=for-the-badge&logo=readthedocs&logoColor=white&labelColor=06090e)](docs/Blackbox_SIEM_EDR_Portfolio.pdf)
 [![Accreditation](https://img.shields.io/badge/Accreditation-NX220_SOC_Analyst-0284c7?style=for-the-badge&logo=openbadges&logoColor=white&labelColor=06090e)](docs/NX220_SOC_Analyst_Accreditation.pdf)
 
 </div>
@@ -20,7 +20,7 @@
 The project originated during the **SOC Analyst (`NX220` — SIEM)** module in the **Magen Cyber** track at **John Bryce (ThinkCyber / Cyberium)** and evolved into a production-grade defensive platform featuring remote policy distribution, MITRE ATT&CK-mapped detection rules, automated `SIGTERM`/`SIGKILL` remediation, and dynamic `iptables` host isolation.
 
 > [!IMPORTANT]
-> **Complete Technical Portfolio & Proof-of-Concept Dossier**: Detailed system architecture, data schemas, MITRE ATT&CK coverage, and step-by-step threat remediation walkthroughs are published in the official 8-page companion dossier: [**`docs/Blackbox_SIEM_EDR_Portfolio.pdf`**](docs/Blackbox_SIEM_EDR_Portfolio.pdf).
+> **Complete Technical Portfolio & Proof-of-Concept Dossier**: Detailed system architecture, data schemas, MITRE ATT&CK coverage, and step-by-step threat remediation walkthroughs are published in the official 12-page companion dossier: [**`docs/Blackbox_SIEM_EDR_Portfolio.pdf`**](docs/Blackbox_SIEM_EDR_Portfolio.pdf).
 
 <br/>
 
@@ -57,13 +57,13 @@ The project originated during the **SOC Analyst (`NX220` — SIEM)** module in t
 <br/>
 
 <div align="center">
-  <a href="docs/Blackbox_SIEM_EDR_Portfolio.pdf" title="Open Black Box Technical Portfolio Dossier (8-Page PDF)">
+  <a href="docs/Blackbox_SIEM_EDR_Portfolio.pdf" title="Open Black Box Technical Portfolio Dossier (12-Page PDF)">
     <img src="assets/evidence/poc_plate_1_siem_dashboard_and_fleet.png" alt="PoC Plate 1 — Live SOC Console, Telemetry Sparkline Trend, JSON Field Discovery &amp; Fleet Monitor" width="100%" />
   </a>
 
   <br/><br/>
 
-  <a href="docs/Blackbox_SIEM_EDR_Portfolio.pdf" title="Open Black Box Technical Portfolio Dossier (8-Page PDF)">
+  <a href="docs/Blackbox_SIEM_EDR_Portfolio.pdf" title="Open Black Box Technical Portfolio Dossier (12-Page PDF)">
     <img src="assets/evidence/poc_plate_2_edr_sensor_and_remediation.png" alt="PoC Plate 2 — Multi-Source EDR Telemetry, Inotify Sensor, Automated SIGKILL Remediation &amp; Dynamic Host Isolation" width="100%" />
   </a>
 </div>
@@ -129,7 +129,7 @@ blackbox-siem-edr/
 │       └── poc_plate_2_edr_sensor_and_remediation.png     # PoC Plate 2 (EDR & Kill)
 └── docs/
     ├── detection_rules.md              # JSON schemas for rules, policies, and firewall blocks
-    ├── Blackbox_SIEM_EDR_Portfolio.pdf # Official 8-Page Technical & PoC Portfolio Dossier
+    ├── Blackbox_SIEM_EDR_Portfolio.pdf # Official 12-Page Technical & PoC Portfolio Dossier
     └── NX220_SOC_Analyst_Accreditation.pdf
 ```
 

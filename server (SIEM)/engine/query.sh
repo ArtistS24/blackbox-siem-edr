@@ -4,9 +4,9 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$SCRIPT_DIR/.."
 
 source "$ROOT_DIR/config/config.conf"
-LOGFILE="$ROOT_DIR/$EVENT_LOG"
+LOGFILE="${TARGET_LOG:-$ROOT_DIR/$EVENT_LOG}"
 
-QUERY=("$@")
+read -r -a QUERY <<< "$*"
 
 FILTER="true"
 MODE="AND"

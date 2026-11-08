@@ -72,14 +72,21 @@ case "$type" in
 
     NETWORK_BLOCK)
 
+        iptables -N BLACKBOX-IN 2>/dev/null || true
+        iptables -N BLACKBOX-OUT 2>/dev/null || true
+        iptables -C INPUT -j BLACKBOX-IN 2>/dev/null || iptables -I INPUT 1 -j BLACKBOX-IN 2>/dev/null || true
+        iptables -C OUTPUT -j BLACKBOX-OUT 2>/dev/null || iptables -I OUTPUT 1 -j BLACKBOX-OUT 2>/dev/null || true
+        iptables -I BLACKBOX-IN 1 -s "$target" -j DROP 2>/dev/null || true
+        iptables -I BLACKBOX-OUT 1 -d "$target" -j DROP 2>/dev/null || true
+
         block_json=$(jq -n \
             --arg ip "$target" \
             '{
-                action: "network_block_requested",
+                action: "network_ip_blocked",
                 target_ip: $ip
             }')
 
-        log_event "INFO" "RESPONSE" "not_implemented" "$block_json"
+        log_event "CRITICAL" "RESPONSE" "action_executed" "$block_json"
         ;;
 
     *)
