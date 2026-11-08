@@ -475,7 +475,7 @@ while true; do
             if [[ -z "$q" ]]; then
                 tail -n 20 "$ROOT_DIR/$ALERT_LOG" | jq -C . 2>/dev/null | less -RFX
             else
-                bash "$ROOT_DIR/engine/query.sh" "$q" | jq -C . 2>/dev/null | less -RFX
+                TARGET_LOG="$ROOT_DIR/$ALERT_LOG" bash "$ROOT_DIR/engine/query.sh" "$q" | jq -C . 2>/dev/null | less -RFX
             fi
             echo -e "\n${neon_cyan}--- Press Enter to return ---${nc}"
             read -r; clear; echo -ne "${HIDE}"

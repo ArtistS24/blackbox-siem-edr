@@ -44,6 +44,17 @@ NETWORK_MONITOR_INTERVAL=${NETWORK_MONITOR_INTERVAL:-5}
 LOGIN_MONITOR_INTERVAL=${LOGIN_MONITOR_INTERVAL:-10}
 HEARTBEAT_INTERVAL=${HEARTBEAT_INTERVAL:-30}
 
+if [[ -f "$POLICIES_FILE" ]]; then
+    WATCH_DIRS=$(jq -r '.settings.watch_dirs // "'"${WATCH_DIRS:-/tmp}"'"' "$POLICIES_FILE")
+    FILE_EVENT_TTL=$(jq -r '.settings.file_event_ttl // '"$FILE_EVENT_TTL"'' "$POLICIES_FILE")
+    FILE_HASH_TTL=$(jq -r '.settings.file_hash_ttl // '"$FILE_HASH_TTL"'' "$POLICIES_FILE")
+    PROCESS_HASH_TTL=$(jq -r '.settings.process_hash_ttl // '"$PROCESS_HASH_TTL"'' "$POLICIES_FILE")
+    MAX_HASH_SIZE_MB=$(jq -r '.settings.max_hash_size_mb // '"${MAX_HASH_SIZE_MB:-10}"'' "$POLICIES_FILE")
+    PROCESS_MONITOR_INTERVAL=$(jq -r '.settings.process_monitor_interval // '"$PROCESS_MONITOR_INTERVAL"'' "$POLICIES_FILE")
+    NETWORK_EVENT_TTL=$(jq -r '.settings.network_event_ttl // '"$NETWORK_EVENT_TTL"'' "$POLICIES_FILE")
+    HASH_EXTENSIONS=$(jq -r '.settings.hash_extensions // "'"${HASH_EXTENSIONS:-sh py elf bin exe}"'"' "$POLICIES_FILE")
+fi
+
 MAX_HASH_SIZE=$(( ${MAX_HASH_SIZE_MB:-10} * 1024 * 1024 ))
 IFS=' ' read -r -a HASH_EXT_ARRAY <<< "${HASH_EXTENSIONS:-sh py elf bin exe}"
 
