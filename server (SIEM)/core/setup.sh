@@ -109,8 +109,7 @@ mkdir -p "$ROOT_DIR/$service_logs_dir"
 touch "$ROOT_DIR/$log_dir/events.log"
 touch "$ROOT_DIR/$log_dir/alerts.log"
 
-if [[ ! -f "$ROOT_DIR/storage/policies.json" ]]; then
-    cat <<EOF > "$ROOT_DIR/storage/policies.json"
+cat <<EOF > "$ROOT_DIR/storage/policies.json"
 {
   "global": {
     "edr_response": $edr_response_val,
@@ -129,7 +128,6 @@ if [[ ! -f "$ROOT_DIR/storage/policies.json" ]]; then
   }
 }
 EOF
-fi
 
 if [[ ! -f "$ROOT_DIR/storage/rules.json" ]]; then
     cat <<EOF > "$ROOT_DIR/storage/rules.json"
