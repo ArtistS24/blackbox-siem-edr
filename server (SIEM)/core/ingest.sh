@@ -12,10 +12,11 @@ if [ ! -f "$ROOT_DIR/$EVENT_LOG" ]; then
 fi
 
 echo "[SIEM] Listening for agents on port $LISTEN_PORT..."
+cd "$ROOT_DIR" || exit 1
 
 while true; do
     if command -v socat >/dev/null 2>&1; then
-        socat TCP-LISTEN:$LISTEN_PORT,reuseaddr,fork SYSTEM:"cat >> '$ROOT_DIR/$EVENT_LOG'"
+        socat TCP-LISTEN:$LISTEN_PORT,reuseaddr,fork OPEN:"$EVENT_LOG",creat,append
     elif command -v ncat >/dev/null 2>&1; then
         ncat -l -k -p "$LISTEN_PORT" >> "$ROOT_DIR/$EVENT_LOG"
     else
