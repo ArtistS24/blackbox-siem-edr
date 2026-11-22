@@ -119,19 +119,19 @@ echo "[SIEM] Starting missing services..."
 
 if ! $INGEST_RUNNING; then
     echo "[SIEM] Starting ingestion engine..."
-    nohup bash "$ROOT_DIR/core/ingest.sh" > "$ROOT_DIR/logs/ingest.out" 2>&1 &
+    setsid nohup bash "$ROOT_DIR/core/ingest.sh" > "$ROOT_DIR/logs/ingest.out" 2>&1 < /dev/null &
     echo $! > "$ROOT_DIR/$SERVICE_LOGS_DIR/ingest.pid"
 fi
 
 if ! $PARSER_RUNNING; then
     echo "[SIEM] Starting parser engine..."
-    nohup bash "$ROOT_DIR/core/parser.sh" > "$ROOT_DIR/logs/parser.out" 2>&1 &
+    setsid nohup bash "$ROOT_DIR/core/parser.sh" > "$ROOT_DIR/logs/parser.out" 2>&1 < /dev/null &
     echo $! > "$ROOT_DIR/$SERVICE_LOGS_DIR/parser.pid"
 fi
 
 if ! $WEB_RUNNING; then
     echo "[SIEM] Starting WEB server..."
-    nohup bash "$ROOT_DIR/core/web-server.sh" > "$ROOT_DIR/logs/web.out" 2>&1 &
+    setsid nohup bash "$ROOT_DIR/core/web-server.sh" > "$ROOT_DIR/logs/web.out" 2>&1 < /dev/null &
     echo $! > "$ROOT_DIR/$SERVICE_LOGS_DIR/web.pid"
 fi
 
