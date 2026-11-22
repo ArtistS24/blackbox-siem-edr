@@ -5,60 +5,60 @@
   <g transform="translate(26, 26)">
     <rect x="0" y="0" width="484" height="100" rx="7" fill="#080b11" stroke="#222c3c" stroke-width="1.1" />
     <line x1="0" y1="12" x2="0" y2="88" stroke="#818cf8" stroke-width="3.5" />
-    <text x="18" y="25" font-family="Georgia, 'Times New Roman', serif" font-size="14.2" font-weight="700" fill="#f4efe6" letter-spacing="0.8">Non-Blocking TCP Socket Ingest</text>
+    <text x="18" y="25" font-family="Georgia, 'Times New Roman', serif" font-size="14.2" font-weight="700" fill="#f4efe6" letter-spacing="0.8">Central TCP Log Receiver</text>
     <text x="468" y="24" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.5" fill="#818cf8">core/ingest.sh · TCP:9000</text>
-    <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">Listens on TCP:9000 via socat (reuseaddr,fork), streaming raw JSON</text>
-    <text x="18" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">telemetry lines from remote Linux endpoints without lock contention</text>
-    <text x="18" y="86" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.2" fill="#a5b4fc">or thread exhaustion during high-velocity file and process bursts.</text>
+    <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">Listens on TCP port 9000 using socat (reuseaddr,fork) to receive</text>
+    <text x="18" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">incoming JSON log lines sent over the network by enrolled Linux</text>
+    <text x="18" y="86" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.2" fill="#a5b4fc">endpoint agents and passes each line to the parser script.</text>
   </g>
 
   <g transform="translate(540, 26)">
     <rect x="0" y="0" width="484" height="100" rx="7" fill="#080b11" stroke="#222c3c" stroke-width="1.1" />
     <line x1="0" y1="12" x2="0" y2="88" stroke="#38bdf8" stroke-width="3.5" />
-    <text x="18" y="25" font-family="Georgia, 'Times New Roman', serif" font-size="14.2" font-weight="700" fill="#f4efe6" letter-spacing="0.8">JSON Schema Validation &amp; Routing</text>
+    <text x="18" y="25" font-family="Georgia, 'Times New Roman', serif" font-size="14.2" font-weight="700" fill="#f4efe6" letter-spacing="0.8">JSON Log Parsing &amp; Alert Splitting</text>
     <text x="468" y="24" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.5" fill="#38bdf8">core/parser.sh · jq -e</text>
-    <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">Pipes incoming telemetry through jq -e validation. Normal events</text>
-    <text x="18" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">route to logs/events.log; rule triggers push to logs/alerts.log;</text>
-    <text x="18" y="86" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.2" fill="#79c0ff">heartbeat beacons update storage/agents.json online/offline state.</text>
+    <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">Checks incoming log lines with jq -e. Standard host activity is</text>
+    <text x="18" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">appended to logs/events.log, rule detections go to logs/alerts.log,</text>
+    <text x="18" y="86" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.2" fill="#79c0ff">and agent heartbeats update storage/agents.json last-seen timestamps.</text>
   </g>
 
   <g transform="translate(26, 138)">
     <rect x="0" y="0" width="484" height="100" rx="7" fill="#080b11" stroke="#222c3c" stroke-width="1.1" />
     <line x1="0" y1="12" x2="0" y2="88" stroke="#10b981" stroke-width="3.5" />
-    <text x="18" y="25" font-family="Georgia, 'Times New Roman', serif" font-size="14.2" font-weight="700" fill="#f4efe6" letter-spacing="0.8">Live Terminal SOC Console &amp; Sparkline</text>
+    <text x="18" y="25" font-family="Georgia, 'Times New Roman', serif" font-size="14.2" font-weight="700" fill="#f4efe6" letter-spacing="0.8">Live Terminal SOC Console</text>
     <text x="468" y="24" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.5" fill="#10b981">cli/dashboard.sh · TUI</text>
-    <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">ANSI operator dashboard displaying CPU/RAM host metrics, daemon</text>
-    <text x="18" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">health, live event &amp; alert stream tables, and an animated 15-tick</text>
-    <text x="18" y="86" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.2" fill="#7ee787">volume trend sparkline ( ▂▃▄▅▆▇█) with multi-token jq filtering.</text>
+    <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">Bash terminal dashboard showing host CPU/RAM usage, listener</text>
+    <text x="18" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">status, recent events and CRITICAL alert cards, and a 15-tick</text>
+    <text x="18" y="86" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.2" fill="#7ee787">event volume bar ( ▂▃▄▅▆▇█) with interactive keyword filtering.</text>
   </g>
 
   <g transform="translate(540, 138)">
     <rect x="0" y="0" width="484" height="100" rx="7" fill="#080b11" stroke="#222c3c" stroke-width="1.1" />
     <line x1="0" y1="12" x2="0" y2="88" stroke="#f59e0b" stroke-width="3.5" />
-    <text x="18" y="25" font-family="Georgia, 'Times New Roman', serif" font-size="14.2" font-weight="700" fill="#f4efe6" letter-spacing="0.8">Multi-Field JSON Key Discovery</text>
-    <text x="468" y="24" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.5" fill="#f59e0b">engine/query.sh · jq paths</text>
-    <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">Recursive JSON schema profiler (paths(scalars) | join(&quot;.&quot;)) mapping</text>
-    <text x="18" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">field cardinality across events.log and alerts.log, paired with</text>
-    <text x="18" y="86" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.2" fill="#fcd34d">multi-condition Boolean query execution across arbitrary keys.</text>
+    <text x="18" y="25" font-family="Georgia, 'Times New Roman', serif" font-size="14.2" font-weight="700" fill="#f4efe6" letter-spacing="0.8">Log Search &amp; JSON Field Listing</text>
+    <text x="468" y="24" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.5" fill="#f59e0b">engine/query.sh · jq</text>
+    <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">Extracts available JSON field names from events.log and alerts.log</text>
+    <text x="18" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">using jq so the analyst can see which fields exist and filter</text>
+    <text x="18" y="86" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.2" fill="#fcd34d">logs by key=value pairs or free-text search terms during triage.</text>
   </g>
 
   <g transform="translate(26, 250)">
     <rect x="0" y="0" width="484" height="100" rx="7" fill="#080b11" stroke="#222c3c" stroke-width="1.1" />
     <line x1="0" y1="12" x2="0" y2="88" stroke="#f43f5e" stroke-width="3.5" />
-    <text x="18" y="25" font-family="Georgia, 'Times New Roman', serif" font-size="14.2" font-weight="700" fill="#f4efe6" letter-spacing="0.8">MITRE ATT&amp;CK Auto-Kill Remediation</text>
-    <text x="468" y="24" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.5" fill="#f43f5e">core/response.sh · SIGKILL</text>
-    <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">Evaluates process_start telemetry against rules.json. On CRITICAL</text>
-    <text x="18" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">match (e.g. T1059.004 Unix Shell), verifies PID liveness, issues</text>
-    <text x="18" y="86" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.2" fill="#fda4af">SIGTERM, re-checks after 1s grace window, and escalates to SIGKILL.</text>
+    <text x="18" y="25" font-family="Georgia, 'Times New Roman', serif" font-size="14.2" font-weight="700" fill="#f4efe6" letter-spacing="0.8">MITRE ATT&amp;CK Process Response</text>
+    <text x="468" y="24" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.5" fill="#f43f5e">core/response.sh · kill</text>
+    <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">Compares new processes against rules.json. When a CRITICAL rule</text>
+    <text x="18" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">matches (such as T1059.004 reverse shell), the agent checks the PID,</text>
+    <text x="18" y="86" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.2" fill="#fda4af">sends SIGTERM (kill -15), waits 1 second, and sends SIGKILL (kill -9).</text>
   </g>
 
   <g transform="translate(540, 250)">
     <rect x="0" y="0" width="484" height="100" rx="7" fill="#080b11" stroke="#222c3c" stroke-width="1.1" />
     <line x1="0" y1="12" x2="0" y2="88" stroke="#c084fc" stroke-width="3.5" />
-    <text x="18" y="25" font-family="Georgia, 'Times New Roman', serif" font-size="14.2" font-weight="700" fill="#f4efe6" letter-spacing="0.8">Dynamic Firewall &amp; 60s Policy Sync</text>
+    <text x="18" y="25" font-family="Georgia, 'Times New Roman', serif" font-size="14.2" font-weight="700" fill="#f4efe6" letter-spacing="0.8">iptables Blocking &amp; 60s Rule Sync</text>
     <text x="468" y="24" text-anchor="end" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.5" fill="#c084fc">core/firewall.sh · HTTP:9100</text>
-    <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">Enforces BLACKBOX-IN and BLACKBOX-OUT iptables drop chains to</text>
-    <text x="18" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">sever C2 sockets while endpoints poll HTTP:9100 every 60 seconds</text>
-    <text x="18" y="86" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.2" fill="#d8b4fe">to hot-reload rules.json, policies.json, and firewall.json.</text>
+    <text x="18" y="48" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">Applies BLACKBOX-IN and BLACKBOX-OUT iptables DROP rules on the</text>
+    <text x="18" y="67" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.8" fill="#9da9bb">endpoint while sync.sh polls the SIEM on HTTP port 9100 every</text>
+    <text x="18" y="86" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="10.2" fill="#d8b4fe">60 seconds to fetch updated rules.json, policies.json, and firewall.json.</text>
   </g>
 </svg>
