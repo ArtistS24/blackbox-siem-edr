@@ -132,7 +132,16 @@ EOF
 fi
 
 if [[ ! -f "$ROOT_DIR/storage/rules.json" ]]; then
-    echo '{"process_rules":[]}' > "$ROOT_DIR/storage/rules.json"
+    cat <<EOF > "$ROOT_DIR/storage/rules.json"
+{
+  "process_rules": [
+    {"name": "Interactive Reverse Shell", "match": "command_line", "value": "/bin/bash -i", "mitre": "T1059.004", "severity": "CRITICAL"},
+    {"name": "Netcat Reverse Shell", "match": "process_name", "value": "ncat", "mitre": "T1059.004", "severity": "CRITICAL"},
+    {"name": "Cron Persistence Edit", "match": "command_line", "value": "/var/spool/cron", "mitre": "T1053.003", "severity": "HIGH"},
+    {"name": "SCP Lateral File Transfer", "match": "process_name", "value": "scp", "mitre": "T1570", "severity": "MEDIUM"}
+  ]
+}
+EOF
 fi
 
 if [[ ! -f "$ROOT_DIR/storage/firewall.json" ]]; then
