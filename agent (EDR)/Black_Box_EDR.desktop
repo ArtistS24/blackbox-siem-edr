@@ -2,10 +2,8 @@
 Version=1.0
 Type=Application
 Name=Black Box EDR
-Comment=
-Exec=/home/kali/Desktop/EDR/.run.sh
-
-Icon=/home/kali/Desktop/EDR/icon/blackbox.ico
-Path=
+Comment=Black Box Linux Endpoint EDR Agent
+Exec=/opt/blackbox-edr/core/Main.sh
+Icon=/opt/blackbox-edr/icon/blackbox.ico
 Terminal=true
 StartupNotify=false

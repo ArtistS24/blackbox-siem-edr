@@ -1,65 +1,158 @@
 <div align="center">
 
-<img src="assets/hero_banner.svg" width="100%" alt="Black Box — Autonomous SIEM Server &amp; Endpoint EDR" />
+<img src="assets/header.png" alt="Black Box — Two-Tier Linux SIEM Server &amp; Endpoint EDR Framework" width="100%" />
 
 <br/>
 
-[![Language](https://img.shields.io/badge/Language-GNU_Bash-d4a359?style=for-the-badge&logo=gnubash&logoColor=white&labelColor=06090e)](server%20%28SIEM%29/SIEM.sh)
-[![Telemetry](https://img.shields.io/badge/Transport-socat_%2B_jq-0e7490?style=for-the-badge&logo=linux&logoColor=white&labelColor=06090e)](server%20%28SIEM%29/core/ingest.sh)
-[![Endpoint Sensor](https://img.shields.io/badge/Sensor-inotifywait_%2B_%2Fproc-6366f1?style=for-the-badge&logo=kalilinux&logoColor=white&labelColor=06090e)](agent%20%28EDR%29/agent/agent.sh)
-[![Rule Spec](https://img.shields.io/badge/Rules_%26_Policies-JSON_Spec-b45309?style=for-the-badge&logo=json&logoColor=white&labelColor=06090e)](docs/detection_rules.md)
-[![SOC Dossier](https://img.shields.io/badge/SOC_Dossier-PDF_(12_Pages)-56d364?style=for-the-badge&logo=readthedocs&logoColor=white&labelColor=06090e)](docs/Blackbox_SIEM_EDR_Portfolio.pdf)
-[![Accreditation](https://img.shields.io/badge/Accreditation-NX220_SOC_Analyst-0284c7?style=for-the-badge&logo=openbadges&logoColor=white&labelColor=06090e)](docs/NX220_SOC_Analyst_Accreditation.pdf)
+<p>
+  <a href="docs/Blackbox_SIEM_EDR_Portfolio.pdf"><img src="https://img.shields.io/badge/Technical_PoC-18--Page_PDF-2f81f7?style=flat-square&amp;labelColor=161b22" alt="18-Page Technical PoC PDF" /></a>
+  <a href="docs/detection_rules.md"><img src="https://img.shields.io/badge/Detection-MITRE_ATT%26CK-30363d?style=flat-square&amp;labelColor=161b22" alt="MITRE ATT&CK Rules" /></a>
+  <a href="#quick-start"><img src="https://img.shields.io/badge/Platform-Linux_Bash-30363d?style=flat-square&amp;labelColor=161b22" alt="Linux GNU Bash" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-30363d?style=flat-square&amp;labelColor=161b22" alt="MIT License" /></a>
+</p>
+
+<p>
+  <a href="#architecture">Architecture</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#live-proof-of-concept">Live PoC</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#documentation">Documentation</a>
+</p>
+
+<br/>
+
+<a href="docs/Blackbox_SIEM_EDR_Portfolio.pdf">
+  <img src="assets/screenshots/siem-events-sparkline.png" alt="Black Box SIEM — Live Event Stream and 15-Tick Volume Sparkline" width="84%" />
+</a>
 
 </div>
 
-<p align="center">
-  <img src="assets/pipeline.svg" width="100%" alt="Black Box 4-Stage SIEM + EDR Architecture" />
-</p>
+<br/>
+
+**Black Box** pairs a centralized Linux SIEM server with a hardened Endpoint Detection and Response (EDR) agent built directly on standard Linux primitives (`inotifywait`, `/proc`, `ss`, `who`, `socat`, `jq`, and `iptables`). Endpoints stream structured JSON telemetry over TCP, evaluate MITRE ATT&CK behavioral rules locally, and pull policy, rule, and firewall updates over HTTP every 60 seconds.
+
+## Architecture
+
+Enrolled endpoints forward telemetry over TCP (`:9000` default) and synchronize policies, MITRE rules, and `iptables` rules from the SIEM HTTP service (`:9100` default):
 
 <p align="center">
-  <img src="assets/sec_1_capabilities.svg" alt="I · Autonomous SIEM Ingestion &amp; Event Correlation" width="100%" />
-  <img src="assets/panel_1_capabilities.svg" alt="Black Box Core SIEM &amp; EDR Capabilities" width="100%" />
+  <a href="assets/architecture.svg">
+    <img src="assets/architecture.svg" alt="Black Box Two-Tier Linux SIEM and Endpoint EDR System Architecture" width="600" />
+  </a>
 </p>
 
-<p align="center">
-  <img src="assets/sec_2_modules.svg" alt="II · Endpoint EDR Telemetry &amp; Procfs Sensor Matrix" width="100%" />
-  <img src="assets/panel_2_modules.svg" alt="Black Box Subsystem &amp; Sensor Matrix" width="100%" />
-</p>
+## Features
+
+- **Real-Time Endpoint Telemetry** — File integrity monitoring (`inotifywait` + SHA-256), 2s `ps`/`/proc` process inspection, 5s `ss -antupH` socket tracking, and 10s `who` session monitoring.
+- **Local MITRE ATT&CK Detection & Auto-Kill** — Evaluates `process_start` events against `rules.json` with per-PID deduplication and 10s cooldown; terminates `CRITICAL` threats via `SIGTERM -> 1s -> SIGKILL` or runs detect-only.
+- **Kernel-Level Containment** — Enforces synced `BLACKBOX-IN` and `BLACKBOX-OUT` `iptables` DROP chains with anti-lockout guards protecting the SIEM IP, `127.0.0.1`, SSH (`22`), and active service ports.
+- **Interactive SOC Console** — Real-time host HUD, 15-tick event volume sparkline, live critical alert stream, recursive `jq` field discovery, and `AND`/`OR`/`NOT` log search.
+- **Fleet Lifecycle & Hardening** — One-line `curl` enrollment, `HEALTHY` vs. `OFFLINE (>45s)` heartbeat tracking, `root:root` + `chmod 700` tamper protection, and a 5s `Main.sh` watchdog under `systemd`.
+
+## Live Proof of Concept
+
+Captured live across an isolated two-node Linux deployment (`siem` control server and enrolled `edr` endpoint):
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <a href="assets/screenshots/siem-console.png"><img src="assets/screenshots/siem-console.png" alt="SIEM Operations Console" width="100%" /></a><br/>
+      <sub><b>SIEM Operations Console</b> — Host HUD &amp; live daemons</sub>
+    </td>
+    <td width="50%" align="center">
+      <a href="assets/screenshots/edr-mitre-rules.png"><img src="assets/screenshots/edr-mitre-rules.png" alt="MITRE ATT&amp;CK Detection Rules Console" width="100%" /></a><br/>
+      <sub><b>MITRE Rules Console</b> — Live interactive rule CRUD</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <a href="assets/screenshots/edr-autokill.png"><img src="assets/screenshots/edr-autokill.png" alt="MITRE T1003.008 Auto-Kill Proof" width="100%" /></a><br/>
+      <sub><b>Auto-Kill Proof (<code>T1003.008</code>)</b> — 3-stage SIEM audit &amp; process kill</sub>
+    </td>
+    <td width="50%" align="center">
+      <a href="assets/screenshots/edr-iptables-drop.png"><img src="assets/screenshots/edr-iptables-drop.png" alt="Kernel iptables Egress Containment" width="100%" /></a><br/>
+      <sub><b><code>iptables</code> Containment</b> — Synced <code>BLACKBOX-OUT</code> DROP rules</sub>
+    </td>
+  </tr>
+</table>
 
 <p align="center">
-  <img src="assets/sec_3_walkthrough.svg" alt="III · Active Remediation &amp; MITRE Defense Execution" width="100%" />
-  <a href="docs/Blackbox_SIEM_EDR_Portfolio.pdf" title="Open Black Box Technical Portfolio Dossier (12-Page PDF)"><img src="assets/evidence/poc_plate_1_siem_dashboard_and_fleet.png" alt="PoC Plate 1 — Live SOC Console, Telemetry Sparkline Trend, JSON Field Discovery &amp; Fleet Monitor" width="100%" /></a>
-  <a href="docs/Blackbox_SIEM_EDR_Portfolio.pdf" title="Open Black Box Technical Portfolio Dossier (12-Page PDF)"><img src="assets/evidence/poc_plate_2_edr_sensor_and_remediation.png" alt="PoC Plate 2 — Multi-Source EDR Telemetry, Inotify Sensor, Automated SIGKILL Remediation &amp; Dynamic Host Isolation" width="100%" /></a>
+  <sub>Full 10-stage operational walkthrough (62 live captures) in the <a href="docs/Blackbox_SIEM_EDR_Portfolio.pdf"><strong>18-Page Technical Architecture &amp; PoC PDF</strong></a>.</sub>
 </p>
 
-<p align="center">
-  <img src="assets/sec_4_execution.svg" alt="IV · Fleet Policy Distribution &amp; ATT&amp;CK Rules Spec" width="100%" />
-</p>
+## Quick Start
+
+Requires Linux with `root` privileges. Both `SIEM.sh` and the remote endpoint installer automatically check and install missing dependencies (`socat`, `jq`, `openssl`, `python3`, `inotify-tools`, `iptables`, `iproute2`, `curl`) via `apt`, `dnf`, `yum`, or `pacman`.
+
+**1. Launch the Central SIEM server** (first run opens the setup wizard and starts detached daemons):
 
 ```bash
-# 1. Launch Central SIEM Server (TCP:9000 Ingest, Parser, HTTP:9100 Sync & Live SOC TUI)
 git clone https://github.com/ArtistS24/blackbox-siem-edr.git
 cd "blackbox-siem-edr/server (SIEM)"
-chmod +x SIEM.sh cli/*.sh core/*.sh engine/*.sh
 sudo ./SIEM.sh
-
-# 2. Enroll or Launch Linux Endpoint EDR Agent
-cd "../agent (EDR)"
-chmod +x core/*.sh agent/*.sh
-sudo ./core/Main.sh
 ```
 
+**2. Enroll remote Linux endpoints** (copy the exact 1-liner from `6) Agents -> 2) Enroll New Endpoint`):
+
+```bash
+curl -s http://<SIEM_IP>:<WEB_PORT>/EDR/blackbox-installer.sh | sudo bash -s -- http://<SIEM_IP>:<WEB_PORT>
+```
+
+<details>
+<summary>Shutdown &amp; endpoint removal commands</summary>
+
+```bash
+# Stop SIEM background daemons
+sudo ./core/stopservice.sh
+
+# Remove endpoint systemd service, iptables chains, and /opt/blackbox-edr
+sudo /opt/blackbox-edr/core/blackbox-uninstaller.sh
+```
+
+</details>
+
+<details>
+<summary>Default MITRE ATT&amp;CK detection rules (<code>storage/rules.json</code>)</summary>
+
+| Rule | Match Field | Pattern | MITRE ATT&CK | Severity |
+| :--- | :--- | :--- | :--- | :--- |
+| Interactive Reverse Shell | `command_line` | `/bin/bash -i` | `T1059.004` | `CRITICAL` |
+| Netcat Reverse Shell | `process_name` | `ncat` | `T1059.004` | `CRITICAL` |
+| Cron Persistence Edit | `command_line` | `/var/spool/cron` | `T1053.003` | `HIGH` |
+| SCP Lateral File Transfer | `process_name` | `scp` | `T1570` | `MEDIUM` |
+
+</details>
+
+<details>
+<summary>Repository layout</summary>
+
+```text
+blackbox-siem-edr/
+├── server (SIEM)/
+│   ├── SIEM.sh            # Setup wizard & detached service launcher
+│   ├── cli/               # SOC dashboard & agent/rule/firewall consoles
+│   ├── core/              # socat TCP ingest, jq parser, heartbeat tracker & HTTP sync
+│   ├── engine/            # Recursive jq field discovery & AND/OR/NOT query engine
+│   └── storage/           # rules.json, policies.json, firewall.json & agent tarball
+├── agent (EDR)/
+│   ├── agent/             # FIM (inotifywait/SHA-256), /proc, ss, who & heartbeat loops
+│   ├── core/              # Main.sh watchdog, detection engine, auto-kill, iptables & sync
+│   └── config/            # Endpoint runtime configuration
+├── docs/                  # 18-Page Technical PoC PDF & JSON detection/policy schemas
+└── assets/                # Architecture vector diagram & real terminal captures
+```
+
+</details>
+
+## Documentation
+
+| Document | Contents |
+| :--- | :--- |
+| [Technical Architecture & Live PoC (PDF)](docs/Blackbox_SIEM_EDR_Portfolio.pdf) | 18-page engineering walkthrough: setup, enrollment, tamper hardening, detection, auto-kill, firewall & `jq` triage |
+| [Detection Rules & Policy Reference](docs/detection_rules.md) | Complete JSON schemas for `rules.json`, `policies.json`, and `firewall.json` |
+
+<br/>
+
 <p align="center">
-  <img src="assets/panel_3_workspace.svg" alt="Black Box SIEM Server &amp; Endpoint EDR Workspace Hierarchy" width="100%" />
+  <sub>MIT License · Built by <a href="https://github.com/ArtistS24">Denis Albin</a></sub>
 </p>
-
-<div align="center">
-
-[![socat](https://img.shields.io/badge/Transport-socat_TCP%3A9000-0d131c?style=flat-square&logo=linux&logoColor=818cf8&labelColor=06090e)](http://www.dest-unreach.org/socat/)
-[![jq](https://img.shields.io/badge/Parser-jqlang%2Fjq-0d131c?style=flat-square&logo=json&logoColor=38bdf8&labelColor=06090e)](https://github.com/jqlang/jq)
-[![inotify-tools](https://img.shields.io/badge/Sensor-inotify--tools-0d131c?style=flat-square&logo=linux&logoColor=34d399&labelColor=06090e)](https://github.com/inotify-tools/inotify-tools)
-[![MITRE ATT&CK](https://img.shields.io/badge/Detection-MITRE_ATT%26CK-0d131c?style=flat-square&logo=target&logoColor=f43f5e&labelColor=06090e)](https://attack.mitre.org/)
-[![iptables](https://img.shields.io/badge/Isolation-Linux_iptables-0d131c?style=flat-square&logo=linux&logoColor=c084fc&labelColor=06090e)](https://www.netfilter.org/)
-
-</div>

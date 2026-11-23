@@ -26,17 +26,21 @@ echo "================================="
 echo "Version: ${SIEM_VERSION:-1.0}"
 echo
 
-for cmd in socat jq openssl; do
+for cmd in socat jq openssl python3 ss; do
     if ! command -v "$cmd" &> /dev/null; then
-        echo "[ERROR] Missing dependency: $cmd"
-        read -rp "Install it now? (y/n): " answer
+        pkg="$cmd"
+        [[ "$cmd" == "ss" ]] && pkg="iproute2"
+        echo "[ERROR] Missing dependency: $cmd ($pkg)"
+        read -rp "Install $pkg now? (y/n): " answer
         if [[ "$answer" =~ ^[Yy]$ ]]; then
             if command -v apt &> /dev/null; then
-                sudo apt update && sudo apt install -y "$cmd"
+                sudo apt update && sudo apt install -y "$pkg"
+            elif command -v dnf &> /dev/null; then
+                sudo dnf install -y "$pkg"
             elif command -v yum &> /dev/null; then
-                sudo yum install -y "$cmd"
+                sudo yum install -y "$pkg"
             elif command -v pacman &> /dev/null; then
-                sudo pacman -S --noconfirm "$cmd"
+                sudo pacman -S --noconfirm "$pkg"
             else
                 echo "[ERROR] Unsupported package manager."
                 exit 1

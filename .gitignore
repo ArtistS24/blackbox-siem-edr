@@ -1,5 +1,11 @@
 *.log
-.run.sh
-__pycache__/
+*.log.processed
+*.pid
+*.out
 *.tmp
 *.sock
+.run.sh
+__pycache__/
+server (SIEM)/logs/
+server (SIEM)/services-logs/
+server (SIEM)/storage/connection.info

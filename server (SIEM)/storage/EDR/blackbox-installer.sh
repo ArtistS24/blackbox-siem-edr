@@ -14,6 +14,31 @@ echo "=========================================="
 echo "    BLACKBOX EDR - SYSTEM DEPLOYMENT"
 echo "=========================================="
 
+# 0. Ensure Required Endpoint Dependencies
+MISSING_PKGS=()
+for entry in "socat:socat" "jq:jq" "openssl:openssl" "inotifywait:inotify-tools" "iptables:iptables" "ss:iproute2" "curl:curl"; do
+    cmd="${entry%%:*}"
+    pkg="${entry##*:}"
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        MISSING_PKGS+=("$pkg")
+    fi
+done
+if (( ${#MISSING_PKGS[@]} > 0 )); then
+    echo "[*] Installing missing dependencies: ${MISSING_PKGS[*]}..."
+    if command -v apt >/dev/null 2>&1; then
+        apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq "${MISSING_PKGS[@]}"
+    elif command -v dnf >/dev/null 2>&1; then
+        dnf install -y -q "${MISSING_PKGS[@]}"
+    elif command -v yum >/dev/null 2>&1; then
+        yum install -y -q "${MISSING_PKGS[@]}"
+    elif command -v pacman >/dev/null 2>&1; then
+        pacman -Sy --noconfirm "${MISSING_PKGS[@]}"
+    else
+        echo "[ERROR] Unsupported package manager. Install manually: ${MISSING_PKGS[*]}"
+        exit 1
+    fi
+fi
+
 # 1. Fetch Metadata (Ports & IP)
 echo "[*] Connecting to SIEM for configuration..."
 curl -s -f "$SIEM_URL/connection.info" -o "/tmp/connection.info" || { echo "SIEM unreachable"; exit 1; }

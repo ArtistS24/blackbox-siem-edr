@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REQUIRED_CMDS=(jq inotifywait ss sha256sum openssl ps awk stat readlink curl)
+REQUIRED_CMDS=(socat jq inotifywait iptables ss sha256sum openssl ps awk stat readlink curl)
 
 for cmd in "${REQUIRED_CMDS[@]}"; do
     if ! command -v "$cmd" >/dev/null 2>&1; then

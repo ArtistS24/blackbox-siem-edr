@@ -114,7 +114,11 @@ show_rule_cheat_sheet() {
             echo -e "\n ${yellow}How to deploy:${nc} Add the rule here, then wait 60s for agent sync."
         fi
         echo -ne "\n [1/2] Pages | [q] Back: "; read -n 1 -s k
-        [[ "$k" == "q" ]] && break; page=$k
+        case "$k" in
+            1) page=1 ;;
+            2) page=2 ;;
+            q|Q) break ;;
+        esac
     done
 }
 
@@ -139,7 +143,6 @@ show_engine_cheat_sheet() {
         if [[ $p -eq 1 ]]; then
             echo -e " ${magenta}PAGE 1: FILE MONITORING${nc}"
             echo -e " • ${bold}Watch Dirs${nc}    : Folders scanned for Create/Modify/Delete."
-            echo -e " • ${bold}Watch Dirs${nc}    : Folders scanned for Create/Modify/Delete."
             echo -e " • ${bold}Scan Int${nc}      : Delay between folder scans. Lower = More CPU usage."
             echo -e " • ${bold}File Event TTL${nc}: Ignores multiple rapid changes to one file."
             echo -e " • ${bold}Max Hash Size${nc} : Prevents the EDR from lagging on huge 500MB+ files."
@@ -153,7 +156,11 @@ show_engine_cheat_sheet() {
             echo -e "                  reduces agent CPU and SIEM log storage noise."
         fi
         echo -ne "\n [1/2] Pages | [q] Back: "; read -n 1 -s k
-        [[ "$k" == "q" ]] && break; p=$k
+        case "$k" in
+            1) p=1 ;;
+            2) p=2 ;;
+            q|Q) break ;;
+        esac
     done
 }
 
@@ -231,10 +238,10 @@ manage_rules() {
                 safe_read "Severity (LOW/MEDIUM/HIGH/CRITICAL)" || continue; rsev="$REPLY"
                 safe_read "MITRE ID" || continue; rmitre="$REPLY"
                 jq --arg name "$rname" --arg match "$mtype" --arg val "$rval" --arg mitre "$rmitre" --arg sev "$rsev" \
-                '.process_rules += [{name: $name, match: $match, value: $val, mitre: $mitre, severity: $sev}]' "$RULES_PATH" > /tmp/r.tmp && mv /tmp/r.tmp "$RULES_PATH"
+                '.process_rules += [{name: $name, match: $match, value: $val, mitre: $mitre, severity: $sev}]' "$RULES_PATH" > "${RULES_PATH}.tmp" && mv "${RULES_PATH}.tmp" "$RULES_PATH"
                 echo -ne "${HIDE}" ;;
             d|D) echo -ne "\n Enter ID to delete: "; read -r rid
-                [[ -n "$rid" && "$rid" != "q" ]] && jq "del(.process_rules[$rid])" "$RULES_PATH" > /tmp/r.tmp && mv /tmp/r.tmp "$RULES_PATH" ;;
+                [[ -n "$rid" && "$rid" != "q" ]] && jq "del(.process_rules[$rid])" "$RULES_PATH" > "${RULES_PATH}.tmp" && mv "${RULES_PATH}.tmp" "$RULES_PATH" ;;
             n|N) (( (PAGE + 1) * LIMIT < TOTAL )) && ((PAGE++)) ;;
             p|P) [[ $PAGE -gt 0 ]] && ((PAGE--)) ;;
             q|Q) return ;;
@@ -270,14 +277,14 @@ manage_firewall() {
             a|A) echo -ne "${SHOW}\n"
                 safe_read "IP Address" || continue; fip="$REPLY"; validate_ip "$fip" || { sleep 3; continue; }
                 safe_read "Direction (in/out)" || continue; fdir="$REPLY"
-                jq --arg ip "$fip" --arg dir "$fdir" '.rules += [{direction: $dir, action: "DROP", ip: $ip, protocol: "tcp"}]' "$FW_PATH" > /tmp/f.tmp && mv /tmp/f.tmp "$FW_PATH"
+                jq --arg ip "$fip" --arg dir "$fdir" '.rules += [{direction: $dir, action: "DROP", ip: $ip, protocol: "tcp"}]' "$FW_PATH" > "${FW_PATH}.tmp" && mv "${FW_PATH}.tmp" "$FW_PATH"
                 echo -ne "${HIDE}" ;;
             o|O) echo -ne "${SHOW}\n"
                 safe_read "Port Number" || continue; fport="$REPLY"; validate_port "$fport" || { sleep 3; continue; }
                 safe_read "Direction (in/out)" || continue; fdir="$REPLY"
-                jq --arg port "$fport" --arg dir "$fdir" '.rules += [{direction: $dir, action: "DROP", port: $port, protocol: "tcp"}]' "$FW_PATH" > /tmp/f.tmp && mv /tmp/f.tmp "$FW_PATH"
+                jq --arg port "$fport" --arg dir "$fdir" '.rules += [{direction: $dir, action: "DROP", port: $port, protocol: "tcp"}]' "$FW_PATH" > "${FW_PATH}.tmp" && mv "${FW_PATH}.tmp" "$FW_PATH"
                 echo -ne "${HIDE}" ;;
-            d|D) echo -ne "\n ID to remove: "; read -r fid; [[ -n "$fid" && "$fid" != "q" ]] && jq "del(.rules[$fid])" "$FW_PATH" > /tmp/f.tmp && mv /tmp/f.tmp "$FW_PATH" ;;
+            d|D) echo -ne "\n ID to remove: "; read -r fid; [[ -n "$fid" && "$fid" != "q" ]] && jq "del(.rules[$fid])" "$FW_PATH" > "${FW_PATH}.tmp" && mv "${FW_PATH}.tmp" "$FW_PATH" ;;
             n|N) (( (PAGE + 1) * LIMIT < TOTAL )) && ((PAGE++)) ;;
             p|P) [[ $PAGE -gt 0 ]] && ((PAGE--)) ;;
             q|Q) return ;;
@@ -300,7 +307,7 @@ edit_list_param() {
         s|S) safe_read "Set value" || return; new="$REPLY" ;;
         *) return ;;
     esac
-    [[ -n "${new:-}" ]] && jq --arg v "$new" ".settings.$key = \$v" "$POLICY_PATH" > t.tmp && mv t.tmp "$POLICY_PATH"
+    [[ -n "${new:-}" ]] && jq --arg v "$new" ".settings.$key = \$v" "$POLICY_PATH" > "${POLICY_PATH}.tmp" && mv "${POLICY_PATH}.tmp" "$POLICY_PATH"
 }
 
 edit_num_param() {
@@ -308,7 +315,7 @@ edit_num_param() {
     clear; draw_box "EDIT: $label"
     echo -e " Current: ${white}${cur}${suffix}${nc}\n --------------------------------------------------------------------------"
     safe_read "New numeric value" || return
-    [[ "$REPLY" =~ ^[0-9.]+$ ]] && jq --arg v "$REPLY" ".settings.$key = (\$v|tonumber)" "$POLICY_PATH" > t.tmp && mv t.tmp "$POLICY_PATH"
+    [[ "$REPLY" =~ ^[0-9.]+$ ]] && jq --arg v "$REPLY" ".settings.$key = (\$v|tonumber)" "$POLICY_PATH" > "${POLICY_PATH}.tmp" && mv "${POLICY_PATH}.tmp" "$POLICY_PATH"
 }
 
 manage_settings() {

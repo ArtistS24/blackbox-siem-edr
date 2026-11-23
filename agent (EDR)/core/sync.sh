@@ -27,6 +27,9 @@ while true; do
 
                 if [[ "$REMOTE_NAME" == "firewall.json" ]]; then
                     NEEDS_FW_RELOAD=true
+                elif [[ "$REMOTE_NAME" == "policies.json" ]]; then
+                    NEEDS_RESTART=true
+                    NEEDS_FW_RELOAD=true
                 else
                     NEEDS_RESTART=true
                 fi

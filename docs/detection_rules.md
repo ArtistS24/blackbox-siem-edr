@@ -19,6 +19,13 @@ Rules are created in the SIEM operator console (`server (SIEM)/cli/agent-mgmt.sh
       "severity": "CRITICAL"
     },
     {
+      "name": "Netcat Reverse Shell",
+      "match": "process_name",
+      "value": "ncat",
+      "mitre": "T1059.004",
+      "severity": "CRITICAL"
+    },
+    {
       "name": "Cron Persistence Edit",
       "match": "command_line",
       "value": "/var/spool/cron",

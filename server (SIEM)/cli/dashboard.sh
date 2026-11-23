@@ -267,10 +267,10 @@ policy_menu() {
                 echo -ne "${HIDE}"
             ;;
             2)
-                jq '.global.edr_response |= not' "$POLICY_PATH" > tmp && mv tmp "$POLICY_PATH"
+                jq '.global.edr_response |= not' "$POLICY_PATH" > "${POLICY_PATH}.tmp" && mv "${POLICY_PATH}.tmp" "$POLICY_PATH"
             ;;
             3)
-                jq '.global.firewall_enabled |= not' "$POLICY_PATH" > tmp && mv tmp "$POLICY_PATH"
+                jq '.global.firewall_enabled |= not' "$POLICY_PATH" > "${POLICY_PATH}.tmp" && mv "${POLICY_PATH}.tmp" "$POLICY_PATH"
             ;;
             4|q) 
                 clear
@@ -500,7 +500,8 @@ while true; do
                     else sparkline+="${neon_red}${chars[$idx]}${nc}"; fi
                 done
 
-                [[ -n "$QUERY" && -s "/tmp/siem_res" ]] && SOURCE_FILE="/tmp/siem_res" || SOURCE_FILE="$ROOT_DIR/$EVENT_LOG"
+                QUERY_RES="$ROOT_DIR/$SERVICE_LOGS_DIR/query.res"
+                [[ -n "$QUERY" && -s "$QUERY_RES" ]] && SOURCE_FILE="$QUERY_RES" || SOURCE_FILE="$ROOT_DIR/$EVENT_LOG"
 
 
                 if [[ "$CURRENT_TOTAL" -ne "$LAST_COUNT" || -z "$PREVIEW_DATA" ]]; then
@@ -544,16 +545,16 @@ while true; do
                             echo -ne "${SHOW}"; echo -ne "\r${CL}${neon_yellow}Query > ${nc}"; read -r INPUT_QUERY; echo -ne "${HIDE}"
                             if [[ -n "$INPUT_QUERY" ]]; then
                                 QUERY="$INPUT_QUERY"
-                                bash "$ROOT_DIR/engine/query.sh" "$QUERY" > /tmp/siem_res
-                                RES_COUNT=$(wc -l < /tmp/siem_res)
-                                clear; jq -C . /tmp/siem_res | less -R
+                                bash "$ROOT_DIR/engine/query.sh" "$QUERY" > "$QUERY_RES"
+                                RES_COUNT=$(wc -l < "$QUERY_RES")
+                                clear; jq -C . "$QUERY_RES" | less -R
                             fi
                             ;;
-                        c|C) unset QUERY RES_COUNT; rm -f /tmp/siem_res 2>/dev/null; PREVIEW_DATA="" ;;
+                        c|C) unset QUERY RES_COUNT; rm -f "$QUERY_RES" 2>/dev/null; PREVIEW_DATA="" ;;
                         p|P)
                             clear
-                            if [[ -n "$QUERY" && -s "/tmp/siem_res" ]]; then
-                                TARGET="/tmp/siem_res"
+                            if [[ -n "$QUERY" && -s "$QUERY_RES" ]]; then
+                                TARGET="$QUERY_RES"
                                 TITLE="FILTER: $QUERY"
                             else
                                 TARGET="$ROOT_DIR/$EVENT_LOG"
