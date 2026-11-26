@@ -296,6 +296,16 @@ heartbeat(){
 }
 
 file_monitor &
+fim_pid=$!
+
+# Ensure child inotifywait sensor exits cleanly when agent.sh restarts
+cleanup_agent() {
+    if [[ -n "${fim_pid:-}" ]]; then
+        pkill -P "$fim_pid" 2>/dev/null || true
+        kill "$fim_pid" 2>/dev/null || true
+    fi
+}
+trap cleanup_agent EXIT TERM INT
 
 last_proc=0; last_net=0; last_login=0; last_hb=0
 

@@ -52,19 +52,25 @@ for (( i=0; i<$COUNT; i++ )); do
     port=$(jq -r ".rules[$i].port // empty" "$FIREWALL_FILE")
     proto=$(jq -r ".rules[$i].protocol // \"tcp\"" "$FIREWALL_FILE")
 
+    # Validate fields before invoking iptables as root
+    [[ "$action" =~ ^(DROP|REJECT|ACCEPT)$ ]] || continue
+    [[ "$proto" =~ ^(tcp|udp|icmp)$ ]] || proto="tcp"
+    [[ -z "$ip" || "$ip" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}(/[0-9]{1,2})?$ ]] || continue
+    [[ -z "$port" || "$port" =~ ^[0-9]{1,5}$ ]] || continue
+
+    cmd_args=(-A)
     if [[ "$direction" == "in" ]]; then
-        cmd="iptables -A BLACKBOX-IN"
-        [[ -n "$ip" ]] && cmd="$cmd -s $ip"
+        cmd_args+=("BLACKBOX-IN")
+        [[ -n "$ip" ]] && cmd_args+=(-s "$ip")
     else
-        cmd="iptables -A BLACKBOX-OUT"
-        [[ -n "$ip" ]] && cmd="$cmd -d $ip"
+        cmd_args+=("BLACKBOX-OUT")
+        [[ -n "$ip" ]] && cmd_args+=(-d "$ip")
     fi
 
-    [[ -n "$port" ]] && cmd="$cmd -p $proto --dport $port"
+    [[ -n "$port" ]] && cmd_args+=(-p "$proto" --dport "$port")
+    cmd_args+=(-j "$action")
 
-    cmd="$cmd -j $action"
-
-    $cmd
+    iptables "${cmd_args[@]}"
 done
 
 log_event "INFO" "FIREWALL" "rules_applied" '{"rule_count":'$COUNT'}'

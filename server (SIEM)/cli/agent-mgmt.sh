@@ -173,7 +173,7 @@ monitor_agents() {
         FRAME=$(
             echo -ne "${HOME}"
             draw_box "ENDPOINT TELEMETRY HUB"
-            printf "  ${bold}%-15s | %-8s | %-12s | %-6s | %-8s | %-12s${nc}\n" "HOSTNAME" "ID" "STATUS" "CPU" "MEM" "LAST PULSE"
+            printf "  ${bold}%-15s | %-8s | %-12s | %-8s | %-8s | %-12s${nc}\n" "HOSTNAME" "ID" "STATUS" "LOAD(1m)" "MEM" "LAST PULSE"
             echo -e "  --------------------------------------------------------------------------"
             if [[ ! -f "$AGENTS_PATH" ]]; then echo -e "\n  ${red}[!] agents.json missing${nc}"
             else
@@ -183,7 +183,7 @@ monitor_agents() {
                     diff=$(( now - last_ts ))
                     [[ $diff -le 45 ]] && status="${green}● HEALTHY${nc}" || status="${red}● OFFLINE${nc}"
                     mem_mb=$(( mem / 1024 ))
-                    printf "  %-15s | %-8s | %-21s | %-5s%% | %-6s MB | %ss ago\n" "$host" "$id" "$status" "$cpu" "$mem_mb" "$diff"
+                    printf "  %-15s | %-8s | %-21s | %-8s | %-6s MB | %ss ago\n" "$host" "$id" "$status" "$cpu" "$mem_mb" "$diff"
                 done
             fi
             echo -e "\n ${dim}[q] to return to Agent Menu${nc}"
@@ -235,13 +235,13 @@ manage_rules() {
                 safe_read "Rule Name" || continue; rname="$REPLY"
                 safe_read "Match Type (1:name, 2:cmd)" || continue; [[ "$REPLY" == "1" ]] && mtype="process_name" || mtype="command_line"
                 safe_read "Value to match" || continue; rval="$REPLY"
-                safe_read "Severity (LOW/MEDIUM/HIGH/CRITICAL)" || continue; rsev="$REPLY"
+                safe_read "Severity (LOW/MEDIUM/HIGH/CRITICAL)" || continue; rsev="${REPLY^^}"
                 safe_read "MITRE ID" || continue; rmitre="$REPLY"
                 jq --arg name "$rname" --arg match "$mtype" --arg val "$rval" --arg mitre "$rmitre" --arg sev "$rsev" \
                 '.process_rules += [{name: $name, match: $match, value: $val, mitre: $mitre, severity: $sev}]' "$RULES_PATH" > "${RULES_PATH}.tmp" && mv "${RULES_PATH}.tmp" "$RULES_PATH"
                 echo -ne "${HIDE}" ;;
             d|D) echo -ne "\n Enter ID to delete: "; read -r rid
-                [[ -n "$rid" && "$rid" != "q" ]] && jq "del(.process_rules[$rid])" "$RULES_PATH" > "${RULES_PATH}.tmp" && mv "${RULES_PATH}.tmp" "$RULES_PATH" ;;
+                [[ "$rid" =~ ^[0-9]+$ ]] && jq --argjson idx "$rid" 'del(.process_rules[$idx])' "$RULES_PATH" > "${RULES_PATH}.tmp" && mv "${RULES_PATH}.tmp" "$RULES_PATH" ;;
             n|N) (( (PAGE + 1) * LIMIT < TOTAL )) && ((PAGE++)) ;;
             p|P) [[ $PAGE -gt 0 ]] && ((PAGE--)) ;;
             q|Q) return ;;
@@ -284,7 +284,7 @@ manage_firewall() {
                 safe_read "Direction (in/out)" || continue; fdir="$REPLY"
                 jq --arg port "$fport" --arg dir "$fdir" '.rules += [{direction: $dir, action: "DROP", port: $port, protocol: "tcp"}]' "$FW_PATH" > "${FW_PATH}.tmp" && mv "${FW_PATH}.tmp" "$FW_PATH"
                 echo -ne "${HIDE}" ;;
-            d|D) echo -ne "\n ID to remove: "; read -r fid; [[ -n "$fid" && "$fid" != "q" ]] && jq "del(.rules[$fid])" "$FW_PATH" > "${FW_PATH}.tmp" && mv "${FW_PATH}.tmp" "$FW_PATH" ;;
+            d|D) echo -ne "\n ID to remove: "; read -r fid; [[ "$fid" =~ ^[0-9]+$ ]] && jq --argjson idx "$fid" 'del(.rules[$idx])' "$FW_PATH" > "${FW_PATH}.tmp" && mv "${FW_PATH}.tmp" "$FW_PATH" ;;
             n|N) (( (PAGE + 1) * LIMIT < TOTAL )) && ((PAGE++)) ;;
             p|P) [[ $PAGE -gt 0 ]] && ((PAGE--)) ;;
             q|Q) return ;;
@@ -303,7 +303,8 @@ edit_list_param() {
     echo -ne "\n action> "; read -n 1 act; echo
     case $act in
         a|A) safe_read "Add item(s)" || return; new=$(echo "$cur $REPLY" | xargs) ;;
-        r|R) safe_read "Remove item" || return; new=$(echo "$cur" | sed -e "s/\b$REPLY\b//g" | xargs) ;;
+        # Filter space-separated paths safely without sed slash collisions
+        r|R) safe_read "Remove item" || return; new=$(echo "$cur" | awk -v rm="$REPLY" '{for(i=1;i<=NF;i++) if($i!=rm) printf "%s ", $i}' | xargs) ;;
         s|S) safe_read "Set value" || return; new="$REPLY" ;;
         *) return ;;
     esac

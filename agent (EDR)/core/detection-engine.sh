@@ -30,16 +30,19 @@ tail -F "$ENDPOINT_LOG" | while read -r line; do
 
         process_name=$(basename "$process_name" | tr -d '[:space:]')
 
+        # Select highest-severity matched rule so multi-rule hits still trigger Auto-Kill
         match=$(jq -c \
             --arg pname "$process_name" \
             --arg cmd "$command_line" \
             '
-            .process_rules[]? |
-            .value as $val |
-            select(
-                (.match == "process_name" and $pname == $val) or
-                (.match == "command_line" and ($cmd | contains($val)))
-            )
+            [ .process_rules[]? |
+              .value as $val |
+              select(
+                  (.match == "process_name" and $pname == $val) or
+                  (.match == "command_line" and ($cmd | contains($val)))
+              )
+            ] | sort_by(if .severity == "CRITICAL" then 0 elif .severity == "HIGH" then 1 elif .severity == "MEDIUM" then 2 else 3 end)
+            | .[0] // empty
             ' "$RULES_FILE")
 
         [[ -z "$match" ]] && continue
